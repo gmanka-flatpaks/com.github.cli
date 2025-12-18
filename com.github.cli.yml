@@ -1,0 +1,28 @@
+app-id: com.github.cli
+runtime: org.freedesktop.Sdk
+runtime-version: '25.08'
+sdk: org.freedesktop.Sdk
+command: gh
+finish-args:
+  - --share=network
+  - --filesystem=host
+  - --socket=ssh-auth
+modules:
+  - name: gh
+    sources:
+      - modules/gh/go.mod.yml
+      - type: git
+        url: https://github.com/cli/cli
+        tag: v2.83.2
+        commit: 560ea94fc7d63ab1f56ca47713599be5e8966fd3
+        x-checker-data:
+          type: git
+    buildsystem: simple
+    build-options:
+      append-path: /usr/lib/sdk/golang/bin
+      env:
+        GOBIN: /app/bin
+        GOFLAGS: -modcacherw
+        GOPATH: /run/build/host-spawn
+    build-commands:
+      - go install -mod=vendor ./cmd/gh
